@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SILENT GAMERS</title>
+    <style>
+        :root {
+            --primary: #ff7700;
+            --primary-dark: #e56a00;
+            --accent-blue: #0088ff;
+            --accent-pink: #ff00aa;
+            --bg-dark: #000000;
+            --bg-dark-secondary: #111111;
+            --bg-dark-tertiary: #2b2b2b;
+            --text-light: #ffffff;
+            --text-muted: #bdbdbd;
+            --transition: all 0.3s ease;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            --particle-color: rgba(255, 255, 255, 0.5);
+        }
+
+        [data-theme="light"] {
+            --bg-dark: #f5f5f5;
+            --bg-dark-secondary: #e0e0e0;
+            --bg-dark-tertiary: #cccccc;
+            --text-light: #000000;
+            --text-muted: #4a4a4a;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --particle-color: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', 'Helvetica', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Header Styles */
+        header {
+            position: sticky;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            background-color: var(--bg-dark-secondary);
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 40px;
+            margin-right: 1rem;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: titleEntry 0.8s forwards 0.5s;
+            text-shadow: 0 0 10px rgba(255, 119, 0, 0.5);
+        }
+
+        @keyframes titleEntry {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+                text-shadow: 0 0 20px rgba(255, 119, 0, 0.8);
+            }
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            width: 50px;
+            height: 24px;
+            background: var(--bg-dark-tertiary);
+            border-radius: 50px;
+            padding: 4px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .toggle-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: absolute;
+            transition: var(--transition);
+            left: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        [data-theme="light"] .toggle-thumb {
+            left: calc(100% - 22px);
+        }
+
+        .toggle-thumb::before {
+            content: "☀️";
+            font-size: 10px;
+        }
+
+        [data-theme="light"] .toggle-thumb::before {
+            content: "🌙";
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--primary);
+            color: var(--text-light);
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 119, 0, 0.4);
+        }
+
+        .btn-bottom {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 99;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .top-gif {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            margin-bottom: 3rem;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 900;
+            color: var(--text-light);
+        }
+
+        /* Image Pair Styles */
+        .image-pair {
+            display: flex;
+            justify-content: space-between;
+            gap: 2rem;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .image-card {
+            flex: 1;
+            min-width: 280px;
+            background: var(--bg-dark-secondary);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            animation: float 6s ease-in-out infinite;
+            transition: var(--transition);
+        }
+
+        .image-card:nth-child(even) {
+            animation-delay: 1s;
+        }
+
+        .image-card:nth-child(3n) {
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .image-container {
+            width: 100%;
+            padding-top: 75%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 1rem;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .solo-section {
+            max-width: 600px;
+            margin: 0 auto 4rem;
+        }
+
+        /* Photo Section */
+        .photo-section {
+            margin-bottom: 4rem;
+        }
+
+        .large-photo {
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .large-photo img {
+            width: 100%;
+            display: block;
+        }
+
+        .special-note {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent-pink));
+            border-radius: 20px;
+            animation: noteEntrance 0.6s ease-out, glow 2s infinite alternate;
+            box-shadow: var(--shadow);
+        }
+
+        @keyframes noteEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 10px var(--primary);
+            }
+            to {
+                box-shadow: 0 0 30px var(--accent-pink);
+            }
+        }
+
+        /* Login Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: var(--bg-dark-secondary);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .countdown-modal {
+            text-align: center;
+        }
+
+        .countdown-circle {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+        }
+
+        .countdown-number {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .countdown-svg {
+            transform: rotate(-90deg);
+        }
+
+        .countdown-circle-bg {
+            fill: none;
+            stroke: var(--bg-dark-tertiary);
+            stroke-width: 4;
+        }
+
+        .countdown-circle-fg {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 4;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.1s linear;
+        }
+
+        .countdown-text {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .login-form-modal {
+            text-align: center;
+        }
+
+        .form-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+        }
+
+        .form-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--bg-dark-tertiary);
+            border-radius: 8px;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .services-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .service-option {
+            background: var(--bg-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .service-option.selected {
+            background: var(--primary);
+            color: var(--text-light);
+            border-color: var(--primary);
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-dark-secondary);
+            margin-top: 3rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .image-pair {
+                flex-direction: column;
+            }
+            
+            .special-note {
+                font-size: 1.4rem;
+                padding: 1.5rem;
+            }
+            
+            header {
+                padding: 1rem;
+            }
+            
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .top-gif {
+                display: none;
+            }
+            
+            .image-card {
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle Background Canvas -->
+    <canvas id="particle-canvas"></canvas>
+    
+    <!-- Sticky Header -->
+    <header>
+        <div class="logo-container">
+            <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-16_07-10-33-449.png?updatedAt=1758209952116" alt="Silent Gamers Logo" class="logo">
+            <h1 class="title">SILENT GAMERS</h1>
+        </div>
+        
+        <div class="header-controls">
+            <div class="dark-mode-toggle" aria-label="Toggle dark mode">
+                <div class="toggle-thumb"></div>
+            </div>
+            <button class="btn login-btn-top" id="loginBtnTop">Log In</button>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main>
+        <!-- Top GIF Section -->
+        <img src="https://ik.imagekit.io/silentgamers/Copy%20of%20silent_20250919_184429_0002.gif?updatedAt=1758287748025" alt="Silent Gamers Promotion" class="top-gif">
+        
+        <!-- Services Headline -->
+        <h2 class="section-title">services</h2>
+        
+        <!-- First Image Pair -->
+        <div class="image-pair">
+            <div class="image-card">
+                <div class="image-container">
+                    <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-19_15-35-12-168.png?updatedAt=1758287986286" alt="CEO Service">
+                </div>
+                <div class="card-content">
+                    <button class="btn" onclick="window.location.href='ceo.html'">check out</button>
+                </div>
+            </div>
+            
+            <div class="image-card">
+                <div class="image-container">
+                    <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-19_15-37-07-261.png?updatedAt=1758287984360" alt="COO Service">
+                </div>
+                <div class="card-content">
+                    <button class="btn" onclick="window.location.href='coo.html'">check out</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Second Image Pair -->
+        <div class="image-pair">
+            <div class="image-card">
+                <div class="image-container">
+                    <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-19_15-29-08-757.png?updatedAt=1758287986342" alt="Anti Hacker Service">
+                </div>
+                <div class="card-content">
+                    <button class="btn" onclick="window.location.href='anti.html'">check out</button>
+                </div>
+            </div>
+            
+            <div class="image-card">
+                <div class="image-container">
+                    <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-19_15-31-17-146.png?updatedAt=1758287986435" alt="Tournament Management Service">
+                </div>
+                <div class="card-content">
+                    <button class="btn" onclick="window.location.href='manage.html'">check out</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Solo Section -->
+        <div class="solo-section">
+            <div class="image-card">
+                <div class="image-container">
+                    <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-19_15-42-42-048.png?updatedAt=1758287984590" alt="Inverter Service">
+                </div>
+                <div class="card-content">
+                    <button class="btn" onclick="window.location.href='inverter.html'">check out</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Photo and Note Section -->
+        <div class="photo-section">
+            <div class="large-photo">
+                <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-18_02-49-16-996.jpg?updatedAt=1758210646096" alt="Silent Gamers Community">
+            </div>
+            
+            <div class="special-note">
+                log in and get your special group
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 SILENT GAMERS. All rights reserved.</p>
+    </footer>
+    
+    <!-- Bottom Login Button -->
+    <button class="btn btn-bottom login-btn-bottom" id="loginBtnBottom">Log In</button>
+    
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal countdown-modal" id="countdownModal">
+            <div class="countdown-circle">
+                <div class="countdown-number" id="countdownNumber">9</div>
+                <svg class="countdown-svg" width="100" height="100" viewBox="0 0 100 100">
+                    <circle class="countdown-circle-bg" cx="50" cy="50" r="45"></circle>
+                    <circle class="countdown-circle-fg" cx="50" cy="50" r="45" stroke-dasharray="283" stroke-dashoffset="0" id="countdownCircle"></circle>
+                </svg>
+            </div>
+            
+            <p class="countdown-text">
+                Fill the details correctly because this will be your identity in our service. Without the right Game UID and mobile number you will never enter the tournament.
+            </p>
+            
+            <button class="btn" id="continueBtn" disabled>Please wait... <span id="countdownText">9s</span></button>
+        </div>
+        
+        <div class="modal login-form-modal" id="loginFormModal" style="display: none;">
+            <div class="form-icon">
+                <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-19_15-35-12-168.png?updatedAt=1758287986286" alt="Login Icon">
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" required>
+                    <div class="error-message" id="nameError">Please enter your name</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mobile">Mobile number</label>
+                    <input type="tel" id="mobile" required pattern="[0-9]{10}">
+                    <div class="error-message" id="mobileError">Please enter a valid 10-digit mobile number</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="gmail">Gmail</label>
+                    <input type="email" id="gmail" required>
+                    <div class="error-message" id="gmailError">Please enter a valid email address</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="game_uid">Game UID</label>
+                    <input type="text" id="game_uid" required>
+                    <div class="error-message" id="gameUidError">Please enter your Game UID</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Which service you want</label>
+                    <div class="services-options">
+                        <div class="service-option" data-value="1v1">1v1</div>
+                        <div class="service-option" data-value="₹2-₹500 tournaments">₹2-₹500 tournaments</div>
+                        <div class="service-option" data-value="e-sport">e-sport</div>
+                    </div>
+                    <div class="error-message" id="servicesError">Please select at least one service</div>
+                </div>
+                
+                <button type="submit" class="btn">Submit</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Theme Management
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        const currentTheme = localStorage.getItem('theme') || (prefersDarkScheme.matches ? 'dark' : 'light');
+        document.body.setAttribute('data-theme', currentTheme);
+        
+        const toggleTheme = () => {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        };
+        
+        document.querySelector('.dark-mode-toggle').addEventListener('click', toggleTheme);
+        
+        // Login Modal Management
+        const loginModal = document.getElementById('loginModal');
+        const countdownModal = document.getElementById('countdownModal');
+        const loginFormModal = document.getElementById('loginFormModal');
+        const countdownNumber = document.getElementById('countdownNumber');
+        const countdownText = document.getElementById('countdownText');
+        const countdownCircle = document.getElementById('countdownCircle');
+        const continueBtn = document.getElementById('continueBtn');
+        
+        let countdownValue = 9;
+        let countdownInterval;
+        
+        const openLoginModal = () => {
+            loginModal.classList.add('active');
+            startCountdown();
+        };
+        
+        const closeLoginModal = () => {
+            loginModal.classList.remove('active');
+            clearInterval(countdownInterval);
+            countdownValue = 9;
+        };
+        
+        const startCountdown = () => {
+            countdownValue = 9;
+            countdownNumber.textContent = countdownValue;
+            countdownText.textContent = `${countdownValue}s`;
+            countdownCircle.style.strokeDashoffset = '0';
+            
+            countdownInterval = setInterval(() => {
+                countdownValue--;
+                
+                if (countdownValue <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownModal.style.display = 'none';
+                    loginFormModal.style.display = 'block';
+                    continueBtn.disabled = false;
+                    continueBtn.textContent = 'Continue';
+                    return;
+                }
+                
+                countdownNumber.textContent = countdownValue;
+                countdownText.textContent = `${countdownValue}s`;
+                const offset = 283 - (283 * (9 - countdownValue) / 9);
+                countdownCircle.style.strokeDashoffset = offset;
+            }, 1000);
+        };
+        
+        document.getElementById('loginBtnTop').addEventListener('click', openLoginModal);
+        document.getElementById('loginBtnBottom').addEventListener('click', openLoginModal);
+        
+        // Service Selection
+        const serviceOptions = document.querySelectorAll('.service-option');
+        const selectedServices = new Set();
+        
+        serviceOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                option.classList.toggle('selected');
+                const value = option.getAttribute('data-value');
+                
+                if (selectedServices.has(value)) {
+                    selectedServices.delete(value);
+                } else {
+                    selectedServices.add(value);
+                }
+            });
+        });
+        
+        // Form Validation and Submission
+        const loginForm = document.getElementById('loginForm');
+        
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            let isValid = true;
+            
+            // Validate name
+            const name = document.getElementById('name').value;
+            if (!name) {
+                document.getElementById('nameError').classList.add('show');
+                isValid = false;
+            } else {
+                document.getElementById('nameError').classList.remove('show');
+            }
+            
+            // Validate mobile
+            const mobile = document.getElementById('mobile').value;
+            if (!mobile || !/^\d{10}$/.test(mobile)) {
+                document.getElementById('mobileError').classList.add('show');
+                isValid = false;
+            } else {
+                document.getElementById('mobileError').classList.remove('show');
+            }
+            
+            // Validate email
+            const email = document.getElementById('gmail').value;
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                document.getElementById('gmailError').classList.add('show');
+                isValid = false;
+            } else {
+                document.getElementById('gmailError').classList.remove('show');
+            }
+            
+            // Validate game UID
+            const gameUid = document.getElementById('game_uid').value;
+            if (!gameUid) {
+                document.getElementById('gameUidError').classList.add('show');
+                isValid = false;
+            } else {
+                document.getElementById('gameUidError').classList.remove('show');
+            }
+            
+            // Validate services
+            if (selectedServices.size === 0) {
+                document.getElementById('servicesError').classList.add('show');
+                isValid = false;
+            } else {
+                document.getElementById('servicesError').classList.remove('show');
+            }
+            
+            if (!isValid) return;
+            
+            // Prepare WhatsApp message
+            const servicesList = Array.from(selectedServices).join(', ');
+            const message = `Name: ${name}%0AMobile: ${mobile}%0AGmail: ${email}%0AGame UID: ${gameUid}%0AServices: ${servicesList}`;
+            const whatsappUrl = `https://wa.me/917454883501?text=${message}`;
+            
+            // Show confirmation and redirect
+            alert('Redirecting to WhatsApp...');
+            window.open(whatsappUrl, '_blank');
+            closeLoginModal();
+        });
+        
+        // Particle System
+        const initParticleSystem = () => {
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            
+            const resizeCanvas = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            };
+            
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 1;
+                    this.speedX = Math.random() * 1 - 0.5;
+                    this.speedY = Math.random() * 1 - 0.5;
+                    this.color = getComputedStyle(document.documentElement).getPropertyValue('--particle-color').trim();
+                    this.alpha = Math.random() * 0.5 + 0.2;
+                }
+                
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    
+                    if (this.x > canvas.width || this.x < 0 || this.y > canvas.height || this.y < 0) {
+                        this.reset();
+                    }
+                }
+                
+                draw() {
+                    ctx.fillStyle = this.color;
+                    ctx.globalAlpha = this.alpha;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            const createParticles = () => {
+                const particleCount = window.innerWidth < 768 ? 30 : 50;
+                particles = [];
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+            };
+            
+            const animate = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                    
+                    // Connect particles
+                    for (let j = i; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < 100) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--particle-color').trim();
+                            ctx.globalAlpha = 0.1 * (1 - distance / 100);
+                            ctx.lineWidth = 0.5;
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                
+                requestAnimationFrame(animate);
+            };
+            
+            createParticles();
+            animate();
+            
+            // Update particles when theme changes
+            const observer = new MutationObserver(() => {
+                particles.forEach(particle => {
+                    particle.color = getComputedStyle(document.documentElement).getPropertyValue('--particle-color').trim();
+                });
+            });
+            
+            observer.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
+        };
+        
+        // Initialize the app
+        window.addEventListener('load', () => {
+            initParticleSystem();
+        });
+    </script>
+</body>
+</html>
