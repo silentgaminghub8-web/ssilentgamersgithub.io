@@ -7,17 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-bg: #f8f9fa;
-            --secondary-bg: #ffffff;
-            --text-color: #212529;
-            --accent-color: #ff7b00;
-            --accent-glow: rgba(255, 123, 0, 0.5);
-            --header-bg: rgba(255, 255, 255, 0.95);
-            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            --calculator-border: 1px solid #e9ecef;
-        }
-
-        .dark-mode {
             --primary-bg: #121212;
             --secondary-bg: #1e1e1e;
             --text-color: #f8f9fa;
@@ -26,6 +15,17 @@
             --header-bg: rgba(30, 30, 30, 0.95);
             --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             --calculator-border: 1px solid #343a40;
+        }
+
+        .light-mode {
+            --primary-bg: #f8f9fa;
+            --secondary-bg: #ffffff;
+            --text-color: #212529;
+            --accent-color: #ff7b00;
+            --accent-glow: rgba(255, 123, 0, 0.5);
+            --header-bg: rgba(255, 255, 255, 0.95);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --calculator-border: 1px solid #e9ecef;
         }
 
         * {
@@ -42,6 +42,30 @@
             overflow-x: hidden;
             position: relative;
             min-height: 100vh;
+        }
+
+        /* NEW: Top GIF Animation */
+        .top-gif-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+            background: rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .top-gif {
+            max-width: 300px;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 0 20px var(--accent-glow);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Background elements */
@@ -97,7 +121,7 @@
             animation-delay: 6s;
         }
 
-        /* NEW: Floating PNG in bottom right corner */
+        /* Floating PNG in bottom right corner */
         .floating-png {
             position: fixed;
             bottom: 20px;
@@ -107,15 +131,15 @@
             background-image: url('https://ik.imagekit.io/silentgamers/Picsart_25-09-19_10-14-14-619.png?updatedAt=1758266032746');
             background-repeat: no-repeat;
             background-size: contain;
-            opacity: 100;
+            opacity: 0.3;
             z-index: 999;
             pointer-events: none;
             animation: float 6s ease-in-out infinite, glow 4s ease-in-out infinite;
             filter: drop-shadow(0 0 8px var(--accent-glow));
         }
 
-        .dark-mode .floating-png {
-            opacity: 0.3;
+        .light-mode .floating-png {
+            opacity: 100;
         }
 
         @keyframes float {
@@ -186,11 +210,11 @@
         }
 
         .dark-mode-toggle:hover {
-            background-color: rgba(0, 0, 0, 0.05);
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
-        .dark-mode .dark-mode-toggle:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+        .light-mode .dark-mode-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.05);
         }
 
         /* Main content */
@@ -288,15 +312,15 @@
         .input-group input {
             width: 100%;
             padding: 0.8rem 1rem;
-            border: 1px solid #ced4da;
+            border: 1px solid #495057;
             border-radius: 6px;
             font-family: 'Montserrat', sans-serif;
             background-color: var(--primary-bg);
             color: var(--text-color);
         }
 
-        .dark-mode .input-group input {
-            border-color: #495057;
+        .light-mode .input-group input {
+            border-color: #ced4da;
         }
 
         .calculate-btn {
@@ -316,11 +340,11 @@
 
         .calculate-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 123, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(255, 154, 51, 0.4);
         }
 
-        .dark-mode .calculate-btn:hover {
-            box-shadow: 0 5px 15px rgba(255, 154, 51, 0.4);
+        .light-mode .calculate-btn:hover {
+            box-shadow: 0 5px 15px rgba(255, 123, 0, 0.3);
         }
 
         .result-card {
@@ -332,11 +356,11 @@
             opacity: 0;
             transform: scale(0.9);
             transition: opacity 0.5s ease, transform 0.5s ease;
-            border: 1px solid rgba(255, 123, 0, 0.1);
+            border: 1px solid rgba(255, 154, 51, 0.1);
         }
 
-        .dark-mode .result-card {
-            border: 1px solid rgba(255, 154, 51, 0.1);
+        .light-mode .result-card {
+            border: 1px solid rgba(255, 123, 0, 0.1);
         }
 
         .result-card.visible {
@@ -506,10 +530,19 @@
                 bottom: 15px;
                 right: 15px;
             }
+            
+            .top-gif {
+                max-width: 200px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- NEW: Top GIF -->
+    <div class="top-gif-container">
+        <img src="https://ik.imagekit.io/silentgamers/Copy%20of%20silent_20250919_221530_0002.gif?updatedAt=1758300415460" alt="Animated Banner" class="top-gif">
+    </div>
+
     <!-- Background elements -->
     <div class="bg-center-overlay"></div>
     <div class="corner-overlay"></div>
@@ -517,7 +550,7 @@
     <div class="corner-overlay"></div>
     <div class="corner-overlay"></div>
     
-    <!-- NEW: Floating PNG in bottom right corner -->
+    <!-- Floating PNG in bottom right corner -->
     <div class="floating-png"></div>
 
     <!-- Sticky Header -->
@@ -526,7 +559,7 @@
             <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-16_07-10-33-449.png?updatedAt=1758209952116" alt="Logo" class="logo">
             <h1 class="header-title">management</h1>
         </div>
-        <button class="dark-mode-toggle">🌙</button>
+        <button class="dark-mode-toggle">☀️</button>
     </header>
 
     <main>
@@ -637,9 +670,14 @@
         const sections = document.querySelectorAll('section');
         const contentItems = document.querySelectorAll('.content-item');
 
+        // Set dark mode as default
+        body.classList.add('dark-mode');
+        darkModeToggle.textContent = '☀️';
+
         // Dark Mode Toggle
         darkModeToggle.addEventListener('click', () => {
             body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');
             darkModeToggle.textContent = body.classList.contains('dark-mode') ? '☀️' : '🌙';
         });
 
