@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-Hacker System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #E6A9B7;
+            --accent: pink;
+            --background: #000000;
+            --text: #FFFFFF;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Particles Background */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            top: 0;
+            left: 0;
+        }
+
+        /* Background Image with Parallax */
+        .background-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://ik.imagekit.io/silentgamers/Picsart_25-09-19_00-45-27-265.png?updatedAt=1758230807276');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: -2;
+            transform: translateZ(-10px) scale(0.9);
+        }
+
+        /* Sticky Header */
+        header {
+            position: sticky;
+            top: 0;
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(230, 169, 183, 0.3);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .header-logo {
+            height: 50px;
+            margin-right: 15px;
+        }
+
+        .header-title {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+
+        .dark-mode-toggle {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #333;
+            border-radius: 15px;
+            margin-left: 10px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--primary);
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 40vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .hero-image {
+            position: absolute;
+            max-width: 80%;
+            max-height: 80%;
+            opacity: 100;
+            z-index: -1;
+        }
+
+        /* Content Sections */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .section:nth-child(even) .section-content {
+            order: 2;
+        }
+
+        .section-title {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-content {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .section-note {
+            font-weight: 400;
+            line-height: 1.8;
+        }
+
+        .section-note strong {
+            color: var(--primary);
+        }
+
+        /* Image Framing */
+        .image-frame {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .section-image {
+            width: 100%;
+            display: block;
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Special Framing Effects */
+        #system_overview .image-frame {
+            border: 2px solid transparent;
+            box-shadow: 0 0 10px rgba(230, 169, 183, 0.5);
+        }
+
+        #system_overview .image-frame:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 20px rgba(230, 169, 183, 0.8);
+        }
+
+        #match_monitoring .image-frame {
+            border: 2px solid transparent;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.6);
+            opacity: 100;
+            transform: translateX(-50px);
+            transition: all 0.5s ease-in-out;
+        }
+
+        #match_monitoring .image-frame.in-view {
+            opacity: 100;
+            transform: translateX(0);
+        }
+
+        #match_monitoring .image-frame:hover {
+            box-shadow: 0 0 25px rgba(255, 105, 180, 1);
+        }
+
+        #penalty_reward .image-frame {
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        #penalty_reward .image-frame::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #ff00cc, #ff0066, #ff00cc);
+            z-index: -1;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        #penalty_reward .image-frame:hover {
+            transform: scale(1.03);
+        }
+
+        #rematch_appeal .image-frame {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.5s ease-in-out;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #rematch_appeal .image-frame.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #rematch_appeal .image-frame:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Taglines */
+        .taglines {
+            margin-top: 2rem;
+            font-style: italic;
+        }
+
+        .tagline {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        /* Floating PNG */
+        .floating-png {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 100px;
+            z-index: 999;
+            animation: bounce 5s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .section {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .section:nth-child(even) .section-content {
+                order: 0;
+            }
+            
+            header {
+                padding: 1rem;
+            }
+            
+            .header-title {
+                font-size: 1.4rem;
+            }
+            
+            .floating-png {
+                width: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="background-image"></div>
+    <div id="particles-js"></div>
+
+    <!-- Sticky Header -->
+    <header>
+        <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-16_07-10-33-449.png?updatedAt=1758209952116" alt="Anti-Hacker Logo" class="header-logo">
+        <h1 class="header-title">Anti-hacker</h1>
+        <div class="dark-mode-toggle">
+            <span>Dark Mode</span>
+            <div class="toggle-switch"></div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-19_00-45-27-265.png?updatedAt=1758230807276" alt="Hero Image" class="hero-image">
+    </section>
+
+    <!-- Content Sections -->
+    <div class="container">
+        <!-- System Overview -->
+        <section id="system_overview" class="section">
+            <div class="section-content">
+                <h2 class="section-title">1 System Overview — Hamara Anti-Hacker Plan</h2>
+                <div class="section-note">
+                    <p><strong>👾 Face of our system = Marjin Boo</strong>. Har match par humari team nazar rakhti hai. Agar koi hacker ghus gaya toh <strong>30 minutes ke andar rematch hoga</strong>. Hacker ko suspend kar diya jayega aur jis player ya Marjin ne valid proof diya hoga usko reward milega. 👉 <em>Line yaad rakho</em>: <strong>"Marjin dekh raha hai, hacker tik nahi paayega."</strong></p>
+                </div>
+            </div>
+            <div class="image-frame">
+                <img src="https://ik.imagekit.io/silentgamers/Copy%20of%20marjin%20booooooo%20!_20250919_012848_0000.png?updatedAt=1758230806539" alt="System Overview" class="section-image">
+            </div>
+        </section>
+
+        <!-- Match Monitoring -->
+        <section id="match_monitoring" class="section">
+            <div class="section-content">
+                <h2 class="section-title">2 Match Monitoring & Roles — Kaun kya karega?</h2>
+                <div class="section-note">
+                    <p><strong>🎭 2 Official Marjin Members</strong> har match ko spectate karte hain. 🎮 Kabhi-kabhi players ko bhi <strong>Player-Marjin</strong> banaya jaata hai. Matlab woh khud game khelenge, par agar hacker usse maar deta hai toh woh record karke report bhejega. ⚡ Rules: • Jo bhi suspicious lage, turant report karna.</p>
+                </div>
+            </div>
+            <div class="image-frame">
+                <img src="https://ik.imagekit.io/silentgamers/marjin%20booooooo%20!_20250919_011822_0000.png?updatedAt=1758230806573" alt="Match Monitoring" class="section-image">
+            </div>
+        </section>
+
+        <!-- Penalty & Reward -->
+        <section id="penalty_reward" class="section">
+            <div class="section-content">
+                <h2 class="section-title">3.Penalty & Reward System — Hacker ka fine, tumhara shine 😎</h2>
+                <div class="section-note">
+                    <p>🚫 <strong>Penalty:</strong> • Sabse pehle hacker ko <strong>suspend</strong> kiya jaayega. 💰 <strong>Reward:</strong> • Agar tum Marjin ho aur tumhari recording se hacker pakda gaya, toh hacker ki entry-fee <strong>direct tumhare wallet mein</strong>. • Ye sab admin verify karega, fake proof par koi paisa nahi milega.</p>
+                </div>
+            </div>
+            <div class="image-frame">
+                <img src="https://ik.imagekit.io/silentgamers/marjin%20booooooo%20!_20250919_010534_0000.png?updatedAt=1758230806590" alt="Penalty & Reward" class="section-image">
+            </div>
+        </section>
+
+        <!-- Rematch & Appeal -->
+        <section id="rematch_appeal" class="section">
+            <div class="section-content">
+                <h2 class="section-title">4. Rematch & Appeal Policy — Fair play ka guarantee</h2>
+                <div class="section-note">
+                    <p>⚡ <strong>Rematch:</strong> Agar hacker detect hua, toh <strong>30 min ke andar rematch</strong> hoga (hacker ko chod kar). 📢 <strong>Appeal:</strong> Agar kisi ko lagta hai galat ban hua, toh woh <strong>24 hours ke andar apna proof</strong> bhej sakta hai.</p>
+                </div>
+                <div class="taglines">
+                    <p class="tagline">"Marjin Boo = Hacker ka Dushman No.1"</p>
+                    <p class="tagline">"Fair Play hi Real Play hai."</p>
+                    <p class="tagline">"Report. Record. Reward."</p>
+                </div>
+            </div>
+            <div class="image-frame">
+                <img src="https://ik.imagekit.io/silentgamers/Our%20iinvester's_20250918_131352_0009.png?updatedAt=1758232267311" alt="Rematch & Appeal" class="section-image">
+            </div>
+        </section>
+    </div>
+
+    <!-- Floating PNG -->
+    <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-19_00-45-27-265.png?updatedAt=1758230807276" alt="Floating Element" class="floating-png">
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Initialize particles.js
+        document.addEventListener('DOMContentLoaded', function() {
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 20, density: { enable: true, value_area: 800 } },
+                    color: { value: "#E6A9B7" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.5, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: { enable: false },
+                    move: {
+                        enable: true,
+                        speed: 1,
+                        direction: "none",
+                        random: true,
+                        straight: false,
+                        out_mode: "out",
+                        bounce: false
+                    }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: {
+                        onhover: { enable: false },
+                        onclick: { enable: false },
+                        resize: true
+                    }
+                },
+                retina_detect: true
+            });
+            
+            // Dark mode toggle
+            const toggleSwitch = document.querySelector('.toggle-switch');
+            toggleSwitch.addEventListener('click', function() {
+                document.body.classList.toggle('light-mode');
+                this.classList.toggle('on');
+                
+                if (document.body.classList.contains('light-mode')) {
+                    document.documentElement.style.setProperty('--background', '#FFFFFF');
+                    document.documentElement.style.setProperty('--text', '#000000');
+                    document.querySelector('.toggle-switch').style.background = '#E6A9B7';
+                } else {
+                    document.documentElement.style.setProperty('--background', '#000000');
+                    document.documentElement.style.setProperty('--text', '#FFFFFF');
+                    document.querySelector('.toggle-switch').style.background = '#333';
+                }
+            });
+            
+            // Scroll animations for sections
+            const scrollElements = document.querySelectorAll('.image-frame');
+            const elementInView = (el, dividend = 1) => {
+                const elementTop = el.getBoundingClientRect().top;
+                return (
+                    elementTop <= (window.innerHeight || document.documentElement.clientHeight) / dividend
+                );
+            };
+            
+            const displayScrollElement = (element) => {
+                element.classList.add('in-view');
+            };
+            
+            const hideScrollElement = (element) => {
+                element.classList.remove('in-view');
+            };
+            
+            const handleScrollAnimation = () => {
+                scrollElements.forEach((el) => {
+                    if (elementInView(el, 1.2)) {
+                        displayScrollElement(el);
+                    } else {
+                        hideScrollElement(el);
+                    }
+                });
+            };
+            
+            window.addEventListener('scroll', () => {
+                handleScrollAnimation();
+            });
+            
+            // Initial check on page load
+            handleScrollAnimation();
+        });
+    </script>
+</body>
+</html>
