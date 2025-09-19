@@ -1,1 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ujjawal Malik (Raj)</title>
+    <style>
+        /* Base Styles & Variables */
+        :root {
+            --black: #000;
+            --white: #fff;
+            --grey: #888;
+            --darkgrey: #2a2a2a;
+            
+            --bg-color: var(--white);
+            --text-color: var(--black);
+            --header-bg: var(--white);
+            --divider-color: var(--darkgrey);
+            --image-border: rgba(0, 0, 0, 0.1);
+            --image-inner-glow: inset 0 0 8px rgba(0, 0, 0, 0.05);
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            
+            --font-family: 'Inter', 'Montserrat', system-ui, sans-serif;
+            --title-weight: 700;
+            --heading-weight: 600;
+            --body-weight: 400;
+            
+            --desktop: 1024px;
+            --tablet: 768px;
+            --mobile: 767px;
+        }
 
+        .dark-mode {
+            --bg-color: var(--black);
+            --text-color: var(--white);
+            --header-bg: var(--black);
+            --divider-color: #444;
+            --image-border: rgba(255, 255, 255, 0.1);
+            --image-inner-glow: inset 0 0 8px rgba(255, 255, 255, 0.05);
+            --shadow: 0 2px 12px rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            font-weight: var(--body-weight);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            letter-spacing: 0.01em;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Header Styles */
+        header {
+            position: sticky;
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            background-color: var(--header-bg);
+            z-index: 100;
+            transition: background-color 0.26s ease-in-out, box-shadow 0.3s ease;
+            box-shadow: none;
+        }
+
+        header.scrolled {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode header.scrolled {
+            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-frame {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            border: 1px solid var(--white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: transform 0.18s ease;
+            will-change: transform;
+        }
+
+        .logo-frame:hover {
+            transform: scale(1.03);
+        }
+
+        .logo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .header-title {
+            font-weight: var(--title-weight);
+            text-transform: uppercase;
+            font-size: 16px;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            border-radius: 12px;
+            background-color: var(--grey);
+            cursor: pointer;
+            transition: background-color 0.26s ease-in-out;
+        }
+
+        .toggle-handle {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--white);
+            transition: transform 0.26s ease-in-out;
+            will-change: transform;
+        }
+
+        .dark-mode .dark-mode-toggle {
+            background-color: var(--darkgrey);
+        }
+
+        .dark-mode .toggle-handle {
+            transform: translateX(24px);
+        }
+
+        /* Main Content Styles */
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 32px 20px 80px;
+        }
+
+        .content-block {
+            margin-bottom: 40px;
+        }
+
+        /* Image Framing */
+        .framed-image {
+            width: 100%;
+            border-radius: 10px;
+            border: 2px solid var(--image-border);
+            box-shadow: var(--image-inner-glow), 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.52s ease-out, transform 0.52s ease-out, box-shadow 0.18s ease;
+            will-change: transform, opacity;
+        }
+
+        .framed-image.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .framed-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        @media (min-width: 768px) {
+            .framed-image:hover {
+                transform: translateY(-6px) scale(1.01);
+                box-shadow: var(--image-inner-glow), 0 12px 20px rgba(0, 0, 0, 0.15);
+            }
+        }
+
+        /* Text Styles */
+        .name {
+            font-weight: var(--title-weight);
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .sub-heading {
+            font-weight: var(--heading-weight);
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+
+        .body-text {
+            font-weight: var(--body-weight);
+            font-size: 16px;
+            margin-bottom: 16px;
+            white-space: pre-line;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background-color: var(--divider-color);
+            margin: 18px 0;
+        }
+
+        /* Button Styles */
+        .button-container {
+            text-align: center;
+            margin: 32px 0;
+        }
+
+        .pill-button {
+            display: inline-block;
+            padding: 12px 28px;
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--text-color);
+            border-radius: 50px;
+            font-family: var(--font-family);
+            font-size: 16px;
+            font-weight: var(--body-weight);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pill-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .pill-button:hover {
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Instagram Link */
+        .instagram-link {
+            display: inline-block;
+            margin-top: 16px;
+        }
+
+        .instagram-icon {
+            width: 32px;
+            height: 32px;
+            filter: invert(0);
+            transition: filter 0.3s ease;
+        }
+
+        .dark-mode .instagram-icon {
+            filter: invert(1);
+        }
+
+        /* Floating PNG */
+        .floating-png {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 72px;
+            height: 72px;
+            pointer-events: none;
+            z-index: 90;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-6px) rotate(3deg);
+            }
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.26s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--bg-color);
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            transform: scale(0.97);
+            transition: transform 0.26s ease;
+            position: relative;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal h2 {
+            font-weight: var(--heading-weight);
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+
+        .modal p {
+            margin-bottom: 24px;
+            white-space: pre-line;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1023px) and (min-width: 768px) {
+            main {
+                padding: 28px 20px 70px;
+            }
+            
+            .divider {
+                margin: 16px 0;
+            }
+        }
+
+        @media (max-width: 767px) {
+            header {
+                padding: 10px 16px;
+            }
+            
+            .logo-frame {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .header-title {
+                font-size: 14px;
+            }
+            
+            main {
+                padding: 24px 16px 60px;
+            }
+            
+            .name {
+                font-size: 20px;
+            }
+            
+            .sub-heading {
+                font-size: 18px;
+            }
+            
+            .body-text {
+                font-size: 14px;
+            }
+            
+            .divider {
+                margin: 12px 0;
+            }
+            
+            .floating-png {
+                width: 56px;
+                height: 56px;
+            }
+            
+            .modal-content {
+                padding: 24px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sticky Header -->
+    <header id="main-header">
+        <div class="logo-container">
+            <div class="logo-frame">
+                <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-16_07-10-33-449.png?updatedAt=1758209952116" alt="Logo">
+            </div>
+        </div>
+        <div class="header-title">CEO</div>
+        <div class="dark-mode-toggle" id="dark-mode-toggle" aria-label="Toggle dark mode">
+            <div class="toggle-handle"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Block -->
+        <section class="content-block">
+            <div class="framed-image" id="hero-image">
+                <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-18_23-29-48-120.jpg?updatedAt=1758219956149" alt="Ujjawal Malik photo" loading="lazy">
+            </div>
+            <div class="name">Name: Ujjawal Malik</div>
+            <div class="body-text">Nickname: Raj</div>
+            <div class="body-text">Qualification: 12th,iti</div>
+            <div class="body-text">मैं एक simple इंसान हूँ जिसने अपने सपनों को हकीकत बनाने के लिए मेहनत शुरू की। पढ़ाई के साथ-साथ मैंने technology और gaming में अपना interest बनाया और धीरे-धीरे उसे अपनी life का हिस्सा बना लिया।</div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Passion & Purpose Block -->
+        <section class="content-block">
+            <div class="framed-image">
+                <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-18_23-41-39-582.jpg?updatedAt=1758219956081" alt="Passion & Purpose image" loading="lazy">
+            </div>
+            <div class="sub-heading">My Passion & Purpose</div>
+            <div class="body-text">2019 में मैं एक e-sport player था, gaming ही मेरी ज़िंदगी थी। लेकिन एक accident ने मेरी life बदल दी और मेरी player journey वहीं खत्म हो गई। तभी से मैंने तय किया कि अगर मैं खुद नहीं खेल सकता, तो दूसरों को मौका दूँगा। इसलिए मैंने tournament hosting शुरू की – ताकि जिन खिलाड़ियों के पास पैसे नहीं हैं वो भी perform कर सकें और earn कर सकें। 👉 और इसमें हमारा कोई personal profit नहीं है, ये सिर्फ players के लिए है।</div>
+            <div class="body-text">My Vision: मेरा vision है कि मैं India का सबसे अच्छा tournament hoster बनूँ और हर खिलाड़ी को बराबर का मौका दे सकूँ।</div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Journey Block -->
+        <section class="content-block">
+            <div class="framed-image">
+                <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-18_23-46-43-142.jpg?updatedAt=1758219955824" alt="Journey image" loading="lazy">
+            </div>
+            <div class="sub-heading">My Journey</div>
+            <div class="body-text">मेरी journey 2020 से शुरू हुई, जब मैंने अपना पहला project बनाने का सोचा। उसके लिए मुझे web coding सीखनी पड़ी, जिसकी वजह से काफी समय लग गया। इस दौरान मेरी सबसे बड़ी struggle रही – lack of time और lack of support। लेकिन मैंने कभी हार नहीं मानी। मेरी पहली achievement थी जब मेरे परिवार ने मुझ पर भरोसा किया और मुझे पैसा व समय दिया ताकि मैं अपने passion पर काम कर सकूँ – tournament hosting।</div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Side Income Button -->
+        <section class="button-container">
+            <button class="pill-button" id="side-income-btn">side income ?</button>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Closing Note Block -->
+        <section class="content-block">
+            <div class="framed-image">
+                <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-18_23-54-31-904.jpg?updatedAt=1758219956099" alt="Closing note image" loading="lazy">
+            </div>
+            <div class="body-text">मैं मानता हूँ कि ज़िंदगी में आगे बढ़ने के लिए सिर्फ सपने देखना काफी नहीं, बल्कि मेहनत करना और दूसरों के लिए कुछ करना भी ज़रूरी है। मेरे लिए tournament सिर्फ game नहीं है – ये players के लिए एक नया मौका और एक नई उम्मीद है</div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Instagram Block -->
+        <section class="content-block">
+            <div class="framed-image">
+                <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-18_22-50-11-848.jpg?updatedAt=1758219981179" alt="Instagram image" loading="lazy">
+            </div>
+            <a href="https://www.instagram.com/rajmalik_99?igsh=NHhxbXk5bWxudTlw" target="_blank" rel="noopener" class="instagram-link">
+                <svg class="instagram-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+            </a>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Investors Block -->
+        <section class="content-block">
+            <div class="framed-image">
+                <img src="https://ik.imagekit.io/silentgamers/Our%20iinvester's_20250918_131352_0006.png?updatedAt=1758210644947" alt="Investors image" loading="lazy">
+            </div>
+        </section>
+    </main>
+
+    <!-- Floating PNG -->
+    <img class="floating-png" src="https://ik.imagekit.io/silentgamers/Picsart_25-09-18_01-34-16-235.png?updatedAt=1758210515029" alt="" aria-hidden="true">
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close" aria-label="Close modal">×</button>
+            <h2>Professional Side</h2>
+            <p>Gaming और tournament hosting के साथ-साथ मैं trading भी करता हूँ। लेकिन मैं उस तरह का trader नहीं हूँ जो courses बेचता है या Instagram पर show-off करता है। ये मेरे लिए सिर्फ एक side income source है, main focus हमेशा gaming और tournaments पर ही रहेगा।</p>
+            <button class="pill-button" id="modal-close-btn">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const body = document.body;
+        const header = document.getElementById('main-header');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const sideIncomeBtn = document.getElementById('side-income-btn');
+        const modal = document.getElementById('modal');
+        const modalClose = document.getElementById('modal-close');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+        const framedImages = document.querySelectorAll('.framed-image');
+        
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            body.classList.add('dark-mode');
+        }
+        
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        // Dark mode toggle
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            // Save preference
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        });
+        
+        // Modal functionality
+        function openModal() {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            // Set focus to close button for accessibility
+            modalClose.focus();
+        }
+        
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            // Return focus to the button that opened the modal
+            sideIncomeBtn.focus();
+        }
+        
+        sideIncomeBtn.addEventListener('click', openModal);
+        modalClose.addEventListener('click', closeModal);
+        modalCloseBtn.addEventListener('click', closeModal);
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+        
+        // Image reveal on scroll
+        function checkImageVisibility() {
+            framedImages.forEach(image => {
+                const rect = image.getBoundingClientRect();
+                const isVisible = (rect.top <= window.innerHeight - 100 && rect.bottom >= 0);
+                
+                if (isVisible) {
+                    image.classList.add('visible');
+                }
+            });
+        }
+        
+        // Initial check and then on scroll
+        checkImageVisibility();
+        window.addEventListener('scroll', checkImageVisibility);
+        
+        // Focus trap for modal
+        modal.addEventListener('keydown', (e) => {
+            if (e.key !== 'Tab') return;
+            
+            const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+            
+            if (e.shiftKey) {
+                if (document.activeElement === firstElement) {
+                    lastElement.focus();
+                    e.preventDefault();
+                }
+            } else {
+                if (document.activeElement === lastElement) {
+                    firstElement.focus();
+                    e.preventDefault();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
