@@ -1,34 +1,37 @@
 <?php
-// Database of valid usernames and passwords
+header('Content-Type: application/json');
+
+// Define valid username and password combinations
 $validCredentials = [
-    'user1234' => 'pass1234',
-    'testuser' => 'testpass',
-    'gamemaster' => 'gamepass1',
-    'player001' => 'playpass1',
-    'silentg01' => 'silentp01',
-    'premium01' => 'premium1',
-    'gamer1234' => 'gamerpass',
-    'admin0001' => 'adminpass',
-    'member001' => 'member01',
-    'access001' => 'access001'
+    ['username' => '12345678', 'password' => '87654321'],
+    ['username' => '11111111', 'password' => '22222222'],
+    ['username' => '33333333', 'password' => '44444444'],
+    ['username' => '55555555', 'password' => '66666666'],
+    ['username' => '77777777', 'password' => '88888888'],
+    ['username' => '99999999', 'password' => '00000000'],
+    ['username' => '12121212', 'password' => '34343434'],
+    ['username' => '56565656', 'password' => '78787878'],
+    ['username' => '90909090', 'password' => '23232323'],
+    ['username' => '45454545', 'password' => '67676767']
 ];
 
-// Get the submitted username and password
+// Get POST data
 $username = $_POST['username'] ?? '';
 $password = $_POST['password'] ?? '';
 
-// Initialize response array
-$response = ['success' => false];
-
-// Check if credentials are valid
-if (!empty($username) && !empty($password)) {
-    if (isset($validCredentials[$username]) && $validCredentials[$username] === $password) {
-        $response['success'] = true;
-        $response['message'] = 'Login successful';
+// Validate credentials
+$isValid = false;
+foreach ($validCredentials as $credential) {
+    if ($credential['username'] === $username && $credential['password'] === $password) {
+        $isValid = true;
+        break;
     }
 }
 
-// Return JSON response
-header('Content-Type: application/json');
-echo json_encode($response);
+// Return response
+if ($isValid) {
+    echo json_encode(['success' => true]);
+} else {
+    echo json_encode(['success' => false]);
+}
 ?>
