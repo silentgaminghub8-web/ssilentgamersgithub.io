@@ -6,10 +6,10 @@
     <meta name="theme-color" content="#ff6600">
     <meta name="description" content="Silent Gamers - Premium gaming tournaments and services">
     <title>SILENT GAMERS</title>
-    <!-- Manifest file -->
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNJTEVOVCBHQU1FUlMiLAogICJzaG9ydF9uYW1lIjogIlNpbGVudEdhbWVycyIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMDAwMDAwIiwKICAidGhlbWVfY29sb3IiOiAiI2ZmNjYwMCIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImh0dHBzOi8vaWsuaW1hZ2Uua2l0LmlvL3NpbGVudGdhbWVycy9QaWNzYXJ0XzI1LTA5LTE2XzA3LTEwLTMzLTQ0OS5wbmc/dXBkYXRlZEF0PTE3NTgyMDk5NTIxMTYiLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXNrYWJsZSIKICAgIH0KICBdCn0K">
+    <!-- Add to Home Screen icon for Chrome -->
+    <link rel="apple-touch-icon" href="https://ik.imagekit.io/silentgamers/Picsart_25-09-20_09-43-31-711.png?updatedAt=1758341648411">
     <style>
-        /* All existing CSS remains unchanged */
         /* Base styles and variables */
         :root {
             --primary: #ff6600;
@@ -496,6 +496,12 @@
             display: none;
             z-index: 1000;
             max-width: 300px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         .pwa-prompt button {
@@ -507,6 +513,24 @@
             margin-top: 0.5rem;
             cursor: pointer;
             font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .pwa-prompt button:hover {
+            background: #f0f0f0;
+        }
+
+        /* Install button in header */
+        .install-btn {
+            display: none;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 1rem;
         }
 
         /* Responsive adjustments */
@@ -532,6 +556,13 @@
             .services-select {
                 grid-template-columns: 1fr;
             }
+            
+            .pwa-prompt {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
         }
     </style>
 </head>
@@ -554,6 +585,7 @@
             <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
                 <span class="theme-icon">🌙</span>
             </button>
+            <button class="install-btn" id="header-install-btn">Install App</button>
             <button class="btn btn-primary" id="login-btn">LOG IN</button>
         </div>
     </header>
@@ -693,7 +725,7 @@
     <div class="pwa-prompt" id="pwa-prompt">
         <p>Install Silent Gamers for a better experience</p>
         <button id="pwa-install-btn">Install</button>
-        <button id="pwa-dismiss-btn" style="background: transparent; color: white; margin-left: 0.5rem;">Dismiss</button>
+        <button id="pwa-dismiss-btn">Dismiss</button>
     </div>
     
     <script>
@@ -710,10 +742,12 @@
         const pwaPrompt = document.getElementById('pwa-prompt');
         const pwaInstallBtn = document.getElementById('pwa-install-btn');
         const pwaDismissBtn = document.getElementById('pwa-dismiss-btn');
+        const headerInstallBtn = document.getElementById('header-install-btn');
         
         // Current theme state
         let isDarkMode = true;
-        
+        let deferredPrompt;
+
         // Initialize the page
         function init() {
             // Initialize particle background
@@ -728,8 +762,8 @@
             // Set up form validation and submission
             setupFormValidation();
             
-            // Check if PWA is already installed and show prompt if not
-            checkPWAInstallable();
+            // Set up PWA install prompt
+            setupPWAInstall();
         }
         
         // Initialize particle background
@@ -1004,17 +1038,20 @@
             element.classList.remove('show');
         }
         
-        // Check if PWA can be installed
-        function checkPWAInstallable() {
-            let deferredPrompt;
-            
+        // Set up PWA install functionality
+        function setupPWAInstall() {
+            // Listen for beforeinstallprompt event
             window.addEventListener('beforeinstallprompt', (e) => {
                 // Prevent the mini-infobar from appearing on mobile
                 e.preventDefault();
                 // Stash the event so it can be triggered later
                 deferredPrompt = e;
-                // Show the install prompt
-                pwaPrompt.style.display = 'block';
+                // Show the install button in header
+                headerInstallBtn.style.display = 'block';
+                // Show the install prompt after a delay
+                setTimeout(() => {
+                    pwaPrompt.style.display = 'block';
+                }, 3000);
             });
             
             // Handle install button click
@@ -1038,26 +1075,46 @@
                 deferredPrompt = null;
             });
             
+            // Handle header install button click
+            headerInstallBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+                
+                // Show the install prompt
+                deferredPrompt.prompt();
+                // Wait for the user to respond to the prompt
+                const { outcome } = await deferredPrompt.userChoice;
+                
+                if (outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                    headerInstallBtn.style.display = 'none';
+                }
+                
+                // Clear the saved prompt since it can't be used again
+                deferredPrompt = null;
+            });
+            
             // Handle dismiss button click
             pwaDismissBtn.addEventListener('click', () => {
                 pwaPrompt.style.display = 'none';
             });
             
+            // Listen for app installed event
             window.addEventListener('appinstalled', () => {
-                // Hide the install prompt
+                // Hide the install prompt and button
                 pwaPrompt.style.display = 'none';
-                // Clear the saved prompt since it can't be used again
+                headerInstallBtn.style.display = 'none';
+                // Clear the saved prompt
                 deferredPrompt = null;
             });
+            
+            // Check if the app is already installed
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                headerInstallBtn.style.display = 'none';
+            }
         }
         
         // Initialize the app when DOM is loaded
         document.addEventListener('DOMContentLoaded', init);
-        
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js');
-        }
     </script>
 </body>
 </html>
