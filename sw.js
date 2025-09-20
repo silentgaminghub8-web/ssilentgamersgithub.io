@@ -1,4 +1,4 @@
-const CACHE_NAME = 'silent-gamers-v3';
+const CACHE_NAME = 'silent-gamers-v4';
 const urlsToCache = [
   './',
   './index.html',
