@@ -507,7 +507,7 @@
         .pwa-prompt button {
             background: white;
             color: var(--primary);
-            border: none;
+            border: nothing;
             padding: 0.5rem 1rem;
             border-radius: var(--radius);
             margin-top: 0.5rem;
@@ -532,6 +532,12 @@
             cursor: pointer;
             margin-left: 1rem;
         } 
+
+        /* Tournament button container */
+        .tournament-btn-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
 
         /* Responsive adjustments */
         @media (min-width: 768px) {
@@ -597,6 +603,11 @@
     
     <!-- Services section -->
     <section class="services">
+        <!-- Play Tournament Button -->
+        <div class="tournament-btn-container">
+            <button class="btn btn-primary" onclick="location.href='login.html'">Play Tournament</button>
+        </div>
+        
         <h2 class="section-title">services</h2>
         
         <div class="services-grid">
