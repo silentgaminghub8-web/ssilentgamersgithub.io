@@ -2,7 +2,7 @@
   "name": "Silent Gamers",
   "short_name": "SilentGamers",
   "description": "Premium gaming tournaments and services",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#ff6600",
@@ -23,5 +23,5 @@
   ],
   "categories": ["games", "entertainment", "social"],
   "lang": "en",
-  "scope": "/"
+  "scope": "./"
 }
