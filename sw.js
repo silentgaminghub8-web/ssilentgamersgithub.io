@@ -12,7 +12,7 @@ const urlsToCache = [
   'https://ik.imagekit.io/silentgamers/Picsart_25-09-19_15-31-17-146.png?updatedAt=1758287986435',
   'https://ik.imagekit.io/silentgamers/Picsart_25-09-19_15-42-42-048.png?updatedAt=1758287984590',
   'https://ik.imagekit.io/silentgamers/Picsart_25-09-18_02-49-16-996.jpg?updatedAt=1758210646096'
-];
+]; 
 
 // Install event
 self.addEventListener('install', event => {
@@ -25,7 +25,7 @@ self.addEventListener('install', event => {
       })
       .then(() => self.skipWaiting())
   );
-});
+}); 
 
 // Activate event
 self.addEventListener('activate', event => {
@@ -42,7 +42,7 @@ self.addEventListener('activate', event => {
       );
     }).then(() => self.clients.claim())
   );
-});
+}); 
 
 // Fetch event
 self.addEventListener('fetch', event => {
@@ -54,21 +54,21 @@ self.addEventListener('fetch', event => {
         // Return cached version or fetch from network
         if (response) {
           return response;
-        }
+        } 
 
         return fetch(event.request).then(response => {
           // Check if we received a valid response
           if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
-          }
+          } 
 
           // Clone the response
-          const responseToCache = response.clone();
+          const responseToCache = response.clone(); 
 
           caches.open(CACHE_NAME)
             .then(cache => {
               cache.put(event.request, responseToCache);
-            });
+            }); 
 
           return response;
         });
@@ -79,14 +79,14 @@ self.addEventListener('fetch', event => {
         }
       })
   );
-});
+}); 
 
 // Background sync
 self.addEventListener('sync', event => {
   if (event.tag === 'background-sync') {
     console.log('Background sync triggered');
   }
-});
+}); 
 
 // Push notifications
 self.addEventListener('push', event => {
@@ -96,12 +96,12 @@ self.addEventListener('push', event => {
     badge: 'https://ik.imagekit.io/silentgamers/Picsart_25-09-20_09-43-31-711.png?updatedAt=1758341648411',
     vibrate: [200, 100, 200],
     tag: 'silent-gamers-notification'
-  };
+  }; 
 
   event.waitUntil(
     self.registration.showNotification('Silent Gamers', options)
   );
-});
+}); 
 
 self.addEventListener('notificationclick', event => {
   event.notification.close();
