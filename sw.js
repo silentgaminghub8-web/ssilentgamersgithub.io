@@ -1,8 +1,8 @@
-const CACHE_NAME = 'silent-gamers-v2';
+const CACHE_NAME = 'silent-gamers-v3';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
+  './',
+  './index.html',
+  './manifest.json',
   'https://ik.imagekit.io/silentgamers/Picsart_25-09-20_09-43-31-711.png?updatedAt=1758341648411',
   'https://ik.imagekit.io/silentgamers/Picsart_25-09-16_07-10-33-449.png?updatedAt=1758209952116',
   'https://ik.imagekit.io/silentgamers/Copy%20of%20silent_20250919_184429_0002.gif?updatedAt=1758287748025',
@@ -77,6 +77,10 @@ self.addEventListener('fetch', event => {
         if (event.request.destination === 'image') {
           return caches.match('https://ik.imagekit.io/silentgamers/Picsart_25-09-16_07-10-33-449.png?updatedAt=1758209952116');
         }
+        // For HTML pages, return the offline page
+        if (event.request.destination === 'document') {
+          return caches.match('./index.html');
+        }
       })
   );
 }); 
@@ -106,6 +110,6 @@ self.addEventListener('push', event => {
 self.addEventListener('notificationclick', event => {
   event.notification.close();
   event.waitUntil(
-    clients.openWindow('/')
+    clients.openWindow('./')
   );
 });
