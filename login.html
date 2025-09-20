@@ -174,6 +174,13 @@
             box-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
         }
         
+        .error {
+            color: #ff4d4d;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
         button {
             width: 100%;
             padding: 12px;
@@ -227,6 +234,16 @@
             color: white;
             font-weight: bold;
         }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .login-box {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -252,11 +269,13 @@
                 <div class="form-group">
                     <label for="username">Username (8 digits)</label>
                     <input type="text" id="username" name="username" required pattern="[0-9]{8}" title="Username must be exactly 8 digits">
+                    <div class="error" id="usernameError">Username must be exactly 8 digits</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="password">Password (8 digits)</label>
                     <input type="password" id="password" name="password" required pattern="[0-9]{8}" title="Password must be exactly 8 digits">
+                    <div class="error" id="passwordError">Password must be exactly 8 digits</div>
                 </div>
                 
                 <button type="submit">Continue</button>
@@ -271,41 +290,55 @@
     </div>
 
     <script>
+        // Database of valid credentials (10 test accounts)
+        const validCredentials = [
+            { username: '12345678', password: '87654321' },
+            { username: '11111111', password: '22222222' },
+            { username: '33333333', password: '44444444' },
+            { username: '55555555', password: '66666666' },
+            { username: '77777777', password: '88888888' },
+            { username: '99999999', password: '00000000' },
+            { username: '12121212', password: '34343434' },
+            { username: '56565656', password: '78787878' },
+            { username: '90909090', password: '23232323' },
+            { username: '45454545', password: '67676767' }
+        ];
+
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            let isValid = true;
+            
+            // Reset errors
+            document.getElementById('usernameError').style.display = 'none';
+            document.getElementById('passwordError').style.display = 'none';
             
             // Validate input format
-            if (!/^\d{8}$/.test(username) || !/^\d{8}$/.test(password)) {
-                showError();
-                return;
+            if (!/^\d{8}$/.test(username)) {
+                document.getElementById('usernameError').style.display = 'block';
+                isValid = false;
             }
             
-            // Create form data to send to server
-            const formData = new FormData();
-            formData.append('username', username);
-            formData.append('password', password);
+            if (!/^\d{8}$/.test(password)) {
+                document.getElementById('passwordError').style.display = 'block';
+                isValid = false;
+            }
             
-            // Send data to server for validation
-            fetch('database.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Redirect to premium page on successful login
-                    window.location.href = 'premium.html';
-                } else {
-                    showError();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showError();
+            if (!isValid) return;
+            
+            // Check credentials against the database
+            const isValidCredentials = validCredentials.some(cred => {
+                return cred.username === username && cred.password === password;
             });
+            
+            if (isValidCredentials) {
+                // Redirect to premium page on successful login
+                window.location.href = 'premium.html';
+            } else {
+                showError();
+            }
         });
         
         function showError() {
@@ -315,6 +348,8 @@
             errorPopup.style.display = 'block';
             
             let seconds = 5;
+            countdown.textContent = seconds;
+            
             const countdownInterval = setInterval(() => {
                 seconds--;
                 countdown.textContent = seconds;
