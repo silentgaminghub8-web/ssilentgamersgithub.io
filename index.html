@@ -363,126 +363,6 @@
             margin: 0 auto;
         } 
 
-        /* Login overlay */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease;
-        } 
-
-        .overlay.active {
-            opacity: 1;
-            visibility: visible;
-        } 
-
-        .notice-container {
-            text-align: center;
-            max-width: 600px;
-            padding: 2rem;
-            color: white;
-        } 
-
-        .notice-container p {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            margin-bottom: 2rem;
-        } 
-
-        .countdown {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin: 1rem 0;
-        } 
-
-        .login-form-container {
-            background-color: var(--bg);
-            border-radius: var(--radius);
-            padding: 2rem;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            display: none;
-            color: var(--text);
-        } 
-
-        .login-form-container.active {
-            display: block;
-        } 
-
-        .login-img {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 1rem;
-            display: block;
-        } 
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        } 
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        } 
-
-        .form-control {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border: 2px solid var(--darkgrey);
-            border-radius: var(--radius);
-            background-color: var(--card-bg);
-            color: var(--text);
-            font-size: 1rem;
-            transition: var(--transition);
-        } 
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.2);
-        } 
-
-        .error-message {
-            color: var(--pink);
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-            display: none;
-        } 
-
-        .error-message.show {
-            display: block;
-        } 
-
-        .services-select {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        } 
-
-        .service-option {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        } 
-
-        .service-option input {
-            width: auto;
-        } 
-
         /* PWA install prompt */
         .pwa-prompt {
             position: fixed;
@@ -559,10 +439,6 @@
                 font-size: 1.2rem;
             }
             
-            .services-select {
-                grid-template-columns: 1fr;
-            }
-            
             .pwa-prompt {
                 bottom: 10px;
                 right: 10px;
@@ -592,7 +468,7 @@
                 <span class="theme-icon">🌙</span>
             </button>
             <button class="install-btn" id="header-install-btn">Install App</button>
-            <button class="btn btn-primary" id="login-btn">LOG IN</button>
+            <button class="btn btn-primary" id="login-btn" onclick="window.location.href='https://script.google.com/macros/s/AKfycbxzZzvxtsj7zqBkrk8n-dMcph3qDwNumChhNLNRisQJi6M4nqyaztUskyQGv1tdDYNo/exec'">LOG IN</button>
         </div>
     </header>
     
@@ -672,65 +548,9 @@
     <!-- Footer -->
     <footer>
         <div class="footer-content">
-            <button class="btn btn-primary" id="footer-login-btn">LOG IN</button>
+            <button class="btn btn-primary" id="footer-login-btn" onclick="window.location.href='https://script.google.com/macros/s/AKfycbxzZzvxtsj7zqBkrk8n-dMcph3qDwNumChhNLNRisQJi6M4nqyaztUskyQGv1tdDYNo/exec'">LOG IN</button>
         </div>
     </footer>
-    
-    <!-- Login overlay -->
-    <div class="overlay" id="login-overlay">
-        <div class="notice-container" id="notice-container">
-            <p>Fill the details right because this will be your identity in our service. Without right game UID and number you will never enter in tournament.</p>
-            <div class="countdown" id="countdown">9</div>
-        </div>
-        
-        <div class="login-form-container" id="login-form">
-            <img src="https://ik.imagekit.io/silentgamers/Picsart_25-09-19_15-35-12-168.png?updatedAt=1758287986286" alt="Login" class="login-img">
-            
-            <form id="registration-form">
-                <div class="form-group">
-                    <label for="fullname">Full name</label>
-                    <input type="text" id="fullname" class="form-control" required>
-                    <div class="error-message" id="fullname-error">Please enter your full name</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="mobile">Mobile number</label>
-                    <input type="tel" id="mobile" class="form-control" required pattern="[0-9]{10}">
-                    <div class="error-message" id="mobile-error">Please enter a valid 10-digit Indian phone number</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Gmail</label>
-                    <input type="email" id="email" class="form-control" required>
-                    <div class="error-message" id="email-error">Please enter a valid Gmail address</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="gameuid">Game UID</label>
-                    <input type="text" id="gameuid" class="form-control" required>
-                    <div class="error-message" id="gameuid-error">Please enter your Game UID</div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Which service you want</label>
-                    <div class="services-select">
-                        <label class="service-option">
-                            <input type="checkbox" name="services" value="1v1"> 1v1
-                        </label>
-                        <label class="service-option">
-                            <input type="checkbox" name="services" value="₹2-₹500 tournaments"> ₹2-₹500 tournaments
-                        </label>
-                        <label class="service-option">
-                            <input type="checkbox" name="services" value="e-sport"> e-sport
-                        </label>
-                    </div>
-                    <div class="error-message" id="services-error">Please select at least one service</div>
-                </div>
-                
-                <button type="submit" class="btn btn-primary" style="width: 100%">Submit</button>
-            </form>
-        </div>
-    </div>
     
     <!-- PWA Install Prompt -->
     <div class="pwa-prompt" id="pwa-prompt">
@@ -743,13 +563,6 @@
         // DOM elements
         const themeToggle = document.getElementById('theme-toggle');
         const themeIcon = themeToggle.querySelector('.theme-icon');
-        const loginBtn = document.getElementById('login-btn');
-        const footerLoginBtn = document.getElementById('footer-login-btn');
-        const loginOverlay = document.getElementById('login-overlay');
-        const noticeContainer = document.getElementById('notice-container');
-        const loginForm = document.getElementById('login-form');
-        const countdownEl = document.getElementById('countdown');
-        const registrationForm = document.getElementById('registration-form');
         const pwaPrompt = document.getElementById('pwa-prompt');
         const pwaInstallBtn = document.getElementById('pwa-install-btn');
         const pwaDismissBtn = document.getElementById('pwa-dismiss-btn');
@@ -766,12 +579,6 @@
             
             // Set up theme toggle
             setupThemeToggle();
-            
-            // Set up login handlers
-            setupLoginHandlers();
-            
-            // Set up form validation and submission
-            setupFormValidation();
             
             // Set up PWA install prompt
             setupPWAInstall();
@@ -912,158 +719,6 @@
                     updateParticleColors();
                 }
             });
-        }
-        
-        // Set up login handlers
-        function setupLoginHandlers() {
-            // Show login overlay with 9-second countdown
-            function showLoginOverlay() {
-                loginOverlay.classList.add('active');
-                noticeContainer.style.display = 'block';
-                loginForm.classList.remove('active');
-                
-                let countdown = 9;
-                countdownEl.textContent = countdown;
-                
-                const countdownInterval = setInterval(() => {
-                    countdown--;
-                    countdownEl.textContent = countdown;
-                    
-                    if (countdown <= 0) {
-                        clearInterval(countdownInterval);
-                        noticeContainer.style.display = 'none';
-                        loginForm.classList.add('active');
-                    }
-                }, 1000);
-            }
-            
-            // Add event listeners to both login buttons
-            loginBtn.addEventListener('click', showLoginOverlay);
-            footerLoginBtn.addEventListener('click', showLoginOverlay);
-            
-            // Close overlay when clicking outside the form
-            loginOverlay.addEventListener('click', (e) => {
-                if (e.target === loginOverlay && !loginForm.classList.contains('active')) {
-                    // Prevent closing during countdown
-                    e.preventDefault();
-                    e.stopPropagation();
-                } else if (e.target === loginOverlay) {
-                    loginOverlay.classList.remove('active');
-                }
-            });
-        }
-        
-        // Set up form validation and submission
-        function setupFormValidation() {
-            registrationForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                // Validate form
-                if (validateForm()) {
-                    // Get form values
-                    const fullname = document.getElementById('fullname').value;
-                    const mobile = document.getElementById('mobile').value;
-                    const email = document.getElementById('email').value;
-                    const gameuid = document.getElementById('gameuid').value;
-                    
-                    // Get selected services
-                    const serviceCheckboxes = document.querySelectorAll('input[name="services"]:checked');
-                    const services = Array.from(serviceCheckboxes).map(cb => cb.value).join(', ');
-                    
-                    // Create WhatsApp message
-                    const message = `Silent Gamers Registration%0AName: ${fullname}%0AMobile: ${mobile}%0AEmail: ${email}%0AGame UID: ${gameuid}%0AServices: ${services}%0ASource: Website`;
-                    
-                    // Open WhatsApp
-                    window.open(`https://wa.me/917454883501?text=${message}`, '_blank');
-                    
-                    // Close overlay
-                    loginOverlay.classList.remove('active');
-                }
-            });
-            
-            // Add input validation
-            const inputs = document.querySelectorAll('.form-control');
-            inputs.forEach(input => {
-                input.addEventListener('blur', () => {
-                    validateField(input);
-                });
-            });
-        }
-        
-        // Validate individual form field
-        function validateField(field) {
-            const errorElement = document.getElementById(`${field.id}-error`);
-            
-            if (field.value.trim() === '') {
-                showError(errorElement, `${field.labels[0].textContent} is required`);
-                return false;
-            }
-            
-            if (field.id === 'mobile' && !/^[0-9]{10}$/.test(field.value)) {
-                showError(errorElement, 'Please enter a valid 10-digit Indian phone number');
-                return false;
-            }
-            
-            if (field.id === 'email') {
-                if (!field.value.includes('@gmail.com')) {
-                    showError(errorElement, 'Only Gmail addresses are accepted');
-                    return false;
-                }
-                
-                // Basic email validation
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(field.value)) {
-                    showError(errorElement, 'Please enter a valid email address');
-                    return false;
-                }
-            }
-            
-            // If valid, hide error
-            hideError(errorElement);
-            return true;
-        }
-        
-        // Validate entire form
-        function validateForm() {
-            let isValid = true;
-            
-            // Validate all fields
-            const fields = [
-                document.getElementById('fullname'),
-                document.getElementById('mobile'),
-                document.getElementById('email'),
-                document.getElementById('gameuid')
-            ];
-            
-            fields.forEach(field => {
-                if (!validateField(field)) {
-                    isValid = false;
-                }
-            });
-            
-            // Validate at least one service is selected
-            const serviceCheckboxes = document.querySelectorAll('input[name="services"]:checked');
-            const servicesError = document.getElementById('services-error');
-            
-            if (serviceCheckboxes.length === 0) {
-                showError(servicesError, 'Please select at least one service');
-                isValid = false;
-            } else {
-                hideError(servicesError);
-            }
-            
-            return isValid;
-        }
-        
-        // Show error message
-        function showError(element, message) {
-            element.textContent = message;
-            element.classList.add('show');
-        }
-        
-        // Hide error message
-        function hideError(element) {
-            element.classList.remove('show');
         }
         
         // Set up PWA install functionality
